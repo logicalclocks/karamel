@@ -251,7 +251,7 @@ public class DagNode implements DagTaskCallback {
       RecipeSerialization serialization = dag.getSerializableRecipeCounter(recipeTask.getRecipeCanonicalName());
       if (serialization != null) {
         synchronized (serialization) {
-          serialization.setFailedStatus(((RunRecipeTask) task).getStatus().equals(Task.Status.FAILED));
+          serialization.setFailedStatus(recipeTask.getStatus().equals(Task.Status.FAILED));
           logger.info(String.format("%s: Recipe %s RecipeSerializationID: %s Has recipe failed: %s",
               ((RunRecipeTask) task).getMachine().getId(),
               ((RunRecipeTask) task).getName(),
