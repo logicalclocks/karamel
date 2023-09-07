@@ -6,7 +6,6 @@
 package se.kth.karamel.backend.running.model.tasks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,10 +48,7 @@ public class VendorCookbookTask extends Task {
     if (subCookbookName != null && !subCookbookName.isEmpty()) {
       cookbookPath += Settings.SLASH + subCookbookName;
     }
-    if (Boolean.parseBoolean(conf.getProperty(Settings.KARAMEL_AIRGAP))) {
-      commands = new ArrayList<>(0);
-      return commands;
-    }
+    boolean airgap = Boolean.parseBoolean(conf.getProperty(Settings.KARAMEL_AIRGAP));
     if (commands == null) {
       commands = ShellCommandBuilder.makeSingleFileCommand(Settings.SCRIPT_PATH_CLONE_VENDOR_COOKBOOK,
           "cookbooks_home", cookbooksHome,
@@ -65,7 +61,8 @@ public class VendorCookbookTask extends Task {
           "task_id", getId(),
           "install_dir_path", Settings.REMOTE_INSTALL_DIR_PATH(getSshUser()),          
           "succeedtasks_filepath", Settings.SUCCEED_TASKLIST_FILENAME,
-          "pid_file", Settings.PID_FILE_NAME);
+          "pid_file", Settings.PID_FILE_NAME,
+          "is_airgap", String.valueOf(airgap));
     }
     return commands;
   }
