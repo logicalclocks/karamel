@@ -11,12 +11,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+
 import se.kth.karamel.backend.running.model.ClusterRuntime;
 import se.kth.karamel.backend.running.model.GroupRuntime;
 import se.kth.karamel.backend.running.model.MachineRuntime;
@@ -242,8 +242,8 @@ public class ChefJsonGenerator {
    * @param clusterEntity 
    */
   public static void aggregateIpAddresses(JsonObject json, JsonCluster definition, ClusterRuntime clusterEntity) {
-    Map<String, List<String>> privateIps = new HashMap<>();
-    Map<String, List<String>> publicIps = new HashMap<>();
+    Map<String, Set<String>> privateIps = new HashMap<>();
+    Map<String, Set<String>> publicIps = new HashMap<>();
     Map<String, Map<String, String>> hosts = new HashMap<>();
     Map<String, Map<String, String>> privateIpsDomainIds = new HashMap<>();
 
@@ -265,8 +265,8 @@ public class ChefJsonGenerator {
                   Settings.REMOTE_CHEFJSON_PRIVATEIPS_DOMAIN_IDS_TAG;
               
               if (!privateIps.containsKey(privateAttr)) {
-                privateIps.put(privateAttr, new ArrayList<>());
-                publicIps.put(publicAttr, new ArrayList<>());
+                privateIps.put(privateAttr, new TreeSet<>());
+                publicIps.put(publicAttr, new TreeSet<>());
                 hosts.put(hostsAttr, new HashMap<String, String>());
                 privateIpsDomainIds.put(privateAttrDomain,
                     new HashMap<>());
@@ -331,9 +331,9 @@ public class ChefJsonGenerator {
    * @param attrs 
    */
   public static void attr2Json(JsonObject root,
-      Map<String, List<String>> attrs) {
-    Set<Map.Entry<String, List<String>>> entrySet = attrs.entrySet();
-    for (Map.Entry<String, List<String>> entry : entrySet) {
+      Map<String, Set<String>> attrs) {
+    Set<Map.Entry<String, Set<String>>> entrySet = attrs.entrySet();
+    for (Map.Entry<String, Set<String>> entry : entrySet) {
       String[] keyComps = entry.getKey().split(Settings.COOKBOOK_DELIMITER + "|" + Settings.ATTR_DELIMITER);
       JsonObject o1 = root;
       for (int i = 0; i < keyComps.length; i++) {
